@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 public struct ChartLine: View {
     
     @ObservedObject var viewModel: ChartLineViewModel
@@ -49,6 +49,7 @@ public struct ChartLine: View {
         self.selectedTextColor = selectedTextColor
     }
     
+    
     public var body: some View {
         VStack {
             ZStack {
@@ -63,17 +64,17 @@ public struct ChartLine: View {
 
                         var step: Double
                         if dataRange <= 50 {
-                            step = 10.0
+                            let _ = step = 10.0
                         } else if dataRange <= 100 {
-                            step = 20.0
+                            let _ = step = 20.0
                         } else if dataRange <= 500 {
-                            step = 50.0
+                            let _ = step = 50.0
                         } else if dataRange <= 1000 {
-                            step = 100.0
+                            let _ = step = 100.0
                         } else if dataRange <= 2000 {
-                            step = 200.0
+                            let _ = step = 200.0
                         } else {
-                            step = 500.0
+                            let _ = step = 500.0
                         }
 
                         let start = floor(minDataValue / step) * step
@@ -81,45 +82,45 @@ public struct ChartLine: View {
                         var points = stride(from: start, through: end, by: step).map { $0 }
                         
                         if maxDataValue < 50 && minDataValue > -50 {
-                            points = []
-                            points.append(maxDataValue)
-                            points.append(0)
+                            let _ = points = []
+                            let _ = points.append(maxDataValue)
+                            let _ = points.append(0)
                             if maxDataValue >= 25 {
-                                points.append((maxDataValue * 0.75).rounded())
-                                points.append((maxDataValue * 0.5).rounded())
-                                points.append((maxDataValue * 0.25).rounded())
+                                let _ = points.append((maxDataValue * 0.75).rounded())
+                                let _ = points.append((maxDataValue * 0.5).rounded())
+                                let _ = points.append((maxDataValue * 0.25).rounded())
                             } else if maxDataValue >= 15 {
-                                points.append((maxDataValue / 2).rounded())
+                                let _ = points.append((maxDataValue / 2).rounded())
                             } else if maxDataValue < 15 {
-                                points.append((maxDataValue * 0.5).rounded())
-                                points.append((maxDataValue * 0.25).rounded())
+                                let _ = points.append((maxDataValue * 0.5).rounded())
+                                let _ = points.append((maxDataValue * 0.25).rounded())
                             }
                             if minDataValue < 0 {
-                                points.append(minDataValue)
+                                let _ = points.append(minDataValue)
                                 if minDataValue < -25 {
-                                    points.append((minDataValue * 0.75).rounded())
-                                    points.append((minDataValue * 0.5).rounded())
-                                    points.append((minDataValue * 0.25).rounded())
+                                    let _ = points.append((minDataValue * 0.75).rounded())
+                                    let _ = points.append((minDataValue * 0.5).rounded())
+                                    let _ = points.append((minDataValue * 0.25).rounded())
                                 } else if minDataValue < -15 {
-                                    points.append((minDataValue * 0.66).rounded())
-                                    points.append((minDataValue * 0.33).rounded())
+                                    let _ = points.append((minDataValue * 0.66).rounded())
+                                    let _ = points.append((minDataValue * 0.33).rounded())
                                 } else if minDataValue > -15 {
-                                    points.append((minDataValue / 2).rounded())
+                                    let _ = points.append((minDataValue / 2).rounded())
                                 }
                             }
                         }
                         
                         if minDataValue < 0 {
-                            points.sort()
-                            points.removeFirst()
+                            let _ = points.sort()
+                            let _ = points.removeFirst()
                         }
                         
                         if abs(minDataValue) < (step / 2.5) {
-                            points = points.filter { $0 != minDataValue }
-                            points.append(0)
+                            let _ = points = points.filter { $0 != minDataValue }
+                            let _ = points.append(0)
                         } else {
-                            points = points.filter { $0 != minDataValue }
-                            points.append(minDataValue)
+                            let _ = points = points.filter { $0 != minDataValue }
+                            let _ = points.append(minDataValue)
                         }
                         
                         ForEach(points, id: \.self) { point in
@@ -130,7 +131,7 @@ public struct ChartLine: View {
                                 path.addLine(to: CGPoint(x: frame.width, y: yPosition))
                             }.stroke(Color.gray, style: point == 0 ? StrokeStyle(lineWidth: 1) : StrokeStyle(lineWidth: 0.5, dash: [3]))
                             
-                            Text("\(point.formatted()) \(User.shared.currency.symbol)")
+                            Text("\(point.formatted())")
                                 .font(.system(size: 12))
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                                 .position(x: -150, y: yPosition)
