@@ -17,3 +17,6 @@ You can add TouchableCharts to your project using Swift Package Manager:
 dependencies: [
     .package(url: "https://github.com/AlexdelaFuente/TouchableCharts.git", from: "1.0.0")
 ]
+```
+## License
+TouchableCharts is available under the MIT license. Read the LICENSE.txt file for more information.
