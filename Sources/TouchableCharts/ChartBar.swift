@@ -81,6 +81,7 @@ public struct ChartBar: View {
                                         .overlay(
                                             Capsule()
                                                 .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
+                                                .offset(y: (340 - barHeight) / 2)
                                         )
                                     
                                     let lineSpacing: CGFloat = 6
