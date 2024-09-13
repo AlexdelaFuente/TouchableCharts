@@ -100,6 +100,18 @@ public struct ChartBar: View {
                                     .mask {
                                         Capsule()
                                     }
+                                    
+                                    
+                                    Capsule()
+                                        .fill(item.1 == 0.0 ? Color(UIColor.systemBackground) : (viewModel.selectedIndex == index ? selectedBarColor : Color.gray))
+                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(viewModel.selectedIndex == index ? selectedBarColor : Color.gray, lineWidth: 3)
+                                        )
+                                    
+                                    
+                                    
                                 }
                                     
                                 Text(formattedMonth(from: item.0))
