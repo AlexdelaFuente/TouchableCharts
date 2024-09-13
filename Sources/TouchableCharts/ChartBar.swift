@@ -74,7 +74,7 @@ public struct ChartBar: View {
                             VStack {
                                 
                                 
-                                ZStack {
+                                ZStack(alignment: .bottom) {
                                     Capsule()
                                         .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
                                         .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
@@ -147,5 +147,4 @@ public struct ChartBar: View {
         }
     }
 }
-
 
