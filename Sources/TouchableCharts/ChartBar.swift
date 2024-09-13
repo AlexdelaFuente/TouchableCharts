@@ -67,7 +67,7 @@ public struct ChartBar: View {
                         ForEach(0..<data.count, id: \.self) { index in
                             let item = data[index]
                             let maxDataValue = data.map { $0.1 }.max() ?? 1
-                            let barHeight = CGFloat(item.1 / maxDataValue) * 400
+                            let barHeight = CGFloat(item.1 / maxDataValue) * 170
                             
                             let adjustedBarHeight = max(barHeight, minBarHeight)
                             
@@ -129,6 +129,7 @@ public struct ChartBar: View {
                 }.padding()
             }
         }
+        .background(.red)
     }
     
     func formattedMonth(from date: Date) -> String {
