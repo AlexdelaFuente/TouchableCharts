@@ -78,11 +78,11 @@ public struct ChartBar: View {
                                     
                                     ZStack(alignment: .center) {
                                         Capsule()
-                                            .fill(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.2))
+                                            .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : Color.gray.opacity(0.2))
                                             .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
                                             .overlay {
                                                 Capsule()
-                                                    .stroke(viewModel.selectedIndex == index ? Color.accentColor : Color.gray, lineWidth: 0.4)
+                                                    .stroke(viewModel.selectedIndex == index ? selectedBarColor : Color.gray, lineWidth: 0.4)
                                             }
                                         
                                         let lineSpacing: CGFloat = 6
@@ -97,7 +97,7 @@ public struct ChartBar: View {
                                                 currentX += lineSpacing
                                             }
                                         }
-                                        .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
+                                        .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
                                         .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
                                         .mask {
                                             Capsule()
