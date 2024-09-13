@@ -80,7 +80,7 @@ public struct ChartBar: View {
                                         .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0, alignment: .bottom)
                                         .overlay(
                                             Capsule()
-                                                .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
+                                                .stroke(viewModel.selectedIndex == index ? selectedBarColor : .yellow, lineWidth: 3) //barcolor
                                                 .offset(y: (340 - barHeight) / 2)
                                         )
                                     
@@ -96,7 +96,7 @@ public struct ChartBar: View {
                                             currentX += lineSpacing
                                         }
                                     }
-                                    .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
+                                    .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
                                     .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0, alignment: .bottom)
                                     .mask {
                                         Capsule()
