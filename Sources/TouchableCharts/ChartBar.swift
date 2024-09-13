@@ -67,7 +67,7 @@ public struct ChartBar: View {
                         ForEach(0..<data.count, id: \.self) { index in
                             let item = data[index]
                             let maxDataValue = data.map { $0.1 }.max() ?? 1
-                            let barHeight = CGFloat(item.1 / maxDataValue) * 170
+                            let barHeight = CGFloat(item.1 / maxDataValue) * 340
                             
                             let adjustedBarHeight = max(barHeight, minBarHeight)
                             
@@ -89,14 +89,14 @@ public struct ChartBar: View {
                                     Path { path in
                                         var currentX: CGFloat = 0
                                         
-                                        while currentX < 30 + 170 {
+                                        while currentX < 30 + 340 {
                                             path.move(to: CGPoint(x: currentX, y: 0))
-                                            path.addLine(to: CGPoint(x: currentX - 170, y: 170))
+                                            path.addLine(to: CGPoint(x: currentX - 340, y: 340))
                                             currentX += lineSpacing
                                         }
                                     }
                                     .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
-                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? 170 : 0)
+                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
                                     .mask {
                                         Capsule()
                                     }
@@ -109,7 +109,7 @@ public struct ChartBar: View {
                                     .frame(width: barWidth)
                                     .padding(.top, 4)
                             }
-                            .frame(height: 200, alignment: .bottom)
+                            .frame(height: 400, alignment: .bottom)
                             .id(index)
                             .onTapGesture {
                                 if viewModel.selectedIndex != index {
