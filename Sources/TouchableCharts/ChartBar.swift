@@ -1,6 +1,6 @@
 //
 //  ChartBar.swift
-//  
+//
 //
 //  Created by Alex de la Fuente Martín on 7/8/24.
 //
@@ -73,34 +73,42 @@ public struct ChartBar: View {
                             
                             VStack {
                                 
-                                
                                 ZStack(alignment: .bottom) {
-                                    Capsule()
-                                        .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
-                                        .overlay(
-                                            Capsule()
-                                                .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
-                                        )
                                     
-                                    let lineSpacing: CGFloat = 6
-                                    let lineWidth: CGFloat = 1
                                     
-                                    Path { path in
-                                        var currentX: CGFloat = 0
-                                        
-                                        while currentX < 30 + 340 {
-                                            path.move(to: CGPoint(x: currentX, y: 0))
-                                            path.addLine(to: CGPoint(x: currentX - 340, y: 340))
-                                            currentX += lineSpacing
-                                        }
-                                    }
-                                    .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
-                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
-                                    .mask {
+                                    ZStack(alignment: .center) {
                                         Capsule()
+                                            .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
+                                            .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
+                                            .overlay(
+                                                Capsule()
+                                                    .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
+                                            )
+                                        
+                                        let lineSpacing: CGFloat = 6
+                                        let lineWidth: CGFloat = 1
+                                        
+                                        Path { path in
+                                            var currentX: CGFloat = 0
+                                            
+                                            while currentX < 30 + 340 {
+                                                path.move(to: CGPoint(x: currentX, y: 0))
+                                                path.addLine(to: CGPoint(x: currentX - 340, y: 340))
+                                                currentX += lineSpacing
+                                            }
+                                        }
+                                        .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
+                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
+                                        .mask {
+                                            Capsule()
+                                        }
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
                                     }
-                                    
                                     
                                     Capsule()
                                         .fill(item.1 == 0.0 ? Color(UIColor.systemBackground) : (viewModel.selectedIndex == index ? selectedBarColor : Color.gray))
@@ -109,11 +117,7 @@ public struct ChartBar: View {
                                             Capsule()
                                                 .stroke(viewModel.selectedIndex == index ? selectedBarColor : Color.gray, lineWidth: 3)
                                         )
-                                    
-                                    
-                                    
                                 }
-                                    
                                 Text(formattedMonth(from: item.0))
                                     .font(.system(size: 12))
                                     .fontWeight(viewModel.selectedIndex == index ? .heavy : .medium)
