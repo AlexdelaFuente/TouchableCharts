@@ -23,7 +23,7 @@ import SwiftUI
 ///   - selectedTextColor: The color of the selected text label. Default is accent color.
 
 
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 public struct ChartBar: View {
     
     @ObservedObject var viewModel: ChartBarViewModel
@@ -72,13 +72,35 @@ public struct ChartBar: View {
                             let adjustedBarHeight = max(barHeight, minBarHeight)
                             
                             VStack {
-                                Capsule()
-                                    .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
-                                    .overlay(
+                                
+                                
+                                ZStack {
+                                    Capsule()
+                                        .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
+                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
+                                        )
+                                    
+                                    let lineSpacing: CGFloat = 6
+                                    let lineWidth: CGFloat = 1
+                                    
+                                    Path { path in
+                                        var currentX: CGFloat = 0
+                                        
+                                        while currentX < 30 + 170 {
+                                            path.move(to: CGPoint(x: currentX, y: 0))
+                                            path.addLine(to: CGPoint(x: currentX - 170, y: 170))
+                                            currentX += lineSpacing
+                                        }
+                                    }
+                                    .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
+                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? 170 : 0)
+                                    .mask {
                                         Capsule()
-                                            .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
-                                    )
+                                    }
+                                }
                                     
                                 Text(formattedMonth(from: item.0))
                                     .font(.system(size: 12))
@@ -90,8 +112,10 @@ public struct ChartBar: View {
                             .frame(height: 200, alignment: .bottom)
                             .id(index)
                             .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.15)) {
-                                    viewModel.selectedIndex = index
+                                if viewModel.selectedIndex != index {
+                                    withAnimation(.easeInOut(duration: 0.15)) {
+                                        viewModel.selectedIndex = index
+                                    }
                                 }
                             }
                         }
