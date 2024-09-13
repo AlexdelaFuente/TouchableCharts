@@ -46,7 +46,7 @@ public struct ChartBar: View {
                 barSpacing: CGFloat = 20,
                 barWidth: CGFloat = 30,
                 barColor: Color = .gray,
-                selectedBarColor: Color = .accentColor,
+                selectedBarColor: Color = .red,
                 textColor: Color = .black,
                 selectedTextColor: Color = .accentColor) {
         self.viewModel = viewModel
@@ -129,7 +129,6 @@ public struct ChartBar: View {
                 }.padding()
             }
         }
-        .background(.red)
     }
     
     func formattedMonth(from date: Date) -> String {
