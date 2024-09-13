@@ -77,7 +77,7 @@ public struct ChartBar: View {
                                 ZStack(alignment: .bottom) {
                                     Capsule()
                                         .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
+                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0, alignment: .bottom)
                                         .overlay(
                                             Capsule()
                                                 .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
@@ -96,7 +96,7 @@ public struct ChartBar: View {
                                         }
                                     }
                                     .stroke(viewModel.selectedIndex == index ? Color.accentColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
-                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
+                                    .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0, alignment: .bottom)
                                     .mask {
                                         Capsule()
                                     }
