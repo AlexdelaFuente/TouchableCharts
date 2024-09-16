@@ -46,7 +46,7 @@ public struct ChartBar: View {
                 barSpacing: CGFloat = 20,
                 barWidth: CGFloat = 30,
                 barColor: Color = .gray,
-                selectedBarColor: Color = .red,
+                selectedBarColor: Color = .accentColor,
                 textColor: Color = .black,
                 selectedTextColor: Color = .accentColor) {
         self.viewModel = viewModel
@@ -63,82 +63,75 @@ public struct ChartBar: View {
         VStack {
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(alignment: .bottom, spacing: barSpacing) {
-                        ForEach(0..<data.count, id: \.self) { index in
-                            let item = data[index]
-                            let maxDataValue = data.map { $0.1 }.max() ?? 1
-                            let barHeight = CGFloat(item.1 / maxDataValue) * 340
-                            
-                            let adjustedBarHeight = max(barHeight, minBarHeight)
-                            
-                            VStack {
+                    GeometryReader { geometry in
+                        let availableHeight = geometry.size.height
+                        HStack(alignment: .bottom, spacing: barSpacing) {
+                            ForEach(0..<data.count, id: \.self) { index in
+                                let item = data[index]
+                                let maxDataValue = data.map { $0.1 }.max() ?? 1
+                                let barHeight = CGFloat(item.1 / maxDataValue) * availableHeight
                                 
-                                ZStack(alignment: .bottom) {
-                                    
-                                    
-                                    ZStack(alignment: .center) {
-                                        Capsule()
-                                            .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : Color.gray.opacity(0.2))
-                                            .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
-                                            .overlay {
-                                                Capsule()
-                                                    .stroke(viewModel.selectedIndex == index ? selectedBarColor : Color.gray, lineWidth: 0.4)
-                                            }
-                                        
-                                        let lineSpacing: CGFloat = 6
-                                        let lineWidth: CGFloat = 1
-                                        
-                                        Path { path in
-                                            var currentX: CGFloat = 0
+                                let adjustedBarHeight = max(barHeight, minBarHeight)
+                                
+                                VStack {
+                                    ZStack(alignment: .bottom) {
+                                        ZStack(alignment: .center) {
+                                            Capsule()
+                                                .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : Color.gray.opacity(0.2))
+                                                .frame(width: barWidth, height: animatedIndexes.contains(index) ? availableHeight : 0)
+                                                .overlay {
+                                                    Capsule()
+                                                        .stroke(viewModel.selectedIndex == index ? selectedBarColor : Color.gray, lineWidth: 0.4)
+                                                }
                                             
-                                            while currentX < 30 + 340 {
-                                                path.move(to: CGPoint(x: currentX, y: 0))
-                                                path.addLine(to: CGPoint(x: currentX - 340, y: 340))
-                                                currentX += lineSpacing
+                                            let lineSpacing: CGFloat = 6
+                                            let lineWidth: CGFloat = 1
+                                            
+                                            Path { path in
+                                                var currentX: CGFloat = 0
+                                                
+                                                while currentX < barWidth + availableHeight {
+                                                    path.move(to: CGPoint(x: currentX, y: 0))
+                                                    path.addLine(to: CGPoint(x: currentX - availableHeight, y: availableHeight))
+                                                    currentX += lineSpacing
+                                                }
+                                            }
+                                            .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
+                                            .frame(width: barWidth, height: animatedIndexes.contains(index) ? availableHeight : 0)
+                                            .mask {
+                                                Capsule()
                                             }
                                         }
-                                        .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
-                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? 340 : 0)
-                                        .mask {
-                                            Capsule()
-                                        }
                                         
-                                        
-                                        
-                                        
-                                        
-                                        
+                                        Capsule()
+                                            .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
+                                            .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
+                                            .overlay(
+                                                Capsule()
+                                                    .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
+                                            )
                                     }
-                                    
-                                    Capsule()
-                                        .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                        .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
-                                        .overlay(
-                                            Capsule()
-                                                .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
-                                        )
+                                    Text(formattedMonth(from: item.0))
+                                        .font(.system(size: 12))
+                                        .fontWeight(viewModel.selectedIndex == index ? .heavy : .medium)
+                                        .foregroundColor(viewModel.selectedIndex == index ? selectedTextColor : textColor)
+                                        .frame(width: barWidth)
+                                        .padding(.top, 4)
                                 }
-                                Text(formattedMonth(from: item.0))
-                                    .font(.system(size: 12))
-                                    .fontWeight(viewModel.selectedIndex == index ? .heavy : .medium)
-                                    .foregroundColor(viewModel.selectedIndex == index ? selectedTextColor : textColor)
-                                    .frame(width: barWidth)
-                                    .padding(.top, 4)
-                            }
-                            .frame(height: 400, alignment: .bottom)
-                            .id(index)
-                            .onTapGesture {
-                                if viewModel.selectedIndex != index {
-                                    withAnimation(.easeInOut(duration: 0.15)) {
-                                        viewModel.selectedIndex = index
+                                .frame(height: availableHeight, alignment: .bottom)
+                                .id(index)
+                                .onTapGesture {
+                                    if viewModel.selectedIndex != index {
+                                        withAnimation(.easeInOut(duration: 0.15)) {
+                                            viewModel.selectedIndex = index
+                                        }
                                     }
                                 }
                             }
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 12).padding(.top)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 12).padding(.top)
-                    
                 }.onAppear {
                     scrollViewProxy.scrollTo(data.count - 1, anchor: .trailing)
                     animateBarsSequentially()
@@ -163,4 +156,3 @@ public struct ChartBar: View {
         }
     }
 }
-
