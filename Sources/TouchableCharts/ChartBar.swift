@@ -64,7 +64,7 @@ public struct ChartBar: View {
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
-                        let height = geometry.size.height
+                        let height = geometry.size.height * 0.85
                         let availableHeight = height * 0.85
                         let _ = print(height)
                         let _ = print(".")
