@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 15.0, *)
+@available(iOS 16.0, *)
 public struct ChartLine: View {
     
     @ObservedObject var viewModel: ChartLineViewModel
@@ -200,6 +200,7 @@ public struct ChartLine: View {
                                             }
                                             
                                             Text(formattedMonth(from: point.0))
+                                                .lineLimit(1)
                                                 .font(.system(size: 14))
                                                 .fontWeight(index == viewModel.selectedIndex ? .heavy : .medium)
                                                 .foregroundColor(index == viewModel.selectedIndex ? selectedTextColor : textColor)

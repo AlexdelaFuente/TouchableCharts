@@ -25,7 +25,7 @@ import SwiftUI
 ///   - scrollToEnd: If the view scroll to the end when the view is created
 
 
-@available(iOS 15.0, *)
+@available(iOS 16.0, *)
 public struct ChartBar: View {
     
     @ObservedObject var viewModel: ChartBarViewModel
@@ -117,6 +117,7 @@ public struct ChartBar: View {
                                             )
                                     }
                                     Text(item.0)
+                                        .lineLimit(1)
                                         .font(.system(size: 12))
                                         .fontWeight(viewModel.selectedIndex == index ? .heavy : .medium)
                                         .foregroundColor(viewModel.selectedIndex == index ? selectedTextColor : textColor)
