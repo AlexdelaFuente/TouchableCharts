@@ -21,10 +21,12 @@ public class ChartBarViewModel: ObservableObject {
     
     private var isAnimated = true
     
+    
     public init(data: [(String, Double)]) {
         self.data = data
         self.animatedIndexes.removeAll() // First launch
     }
+    
     
     public func selectIndex(_ index: Int) {
         guard index >= 0 && index < data.count else { return }
@@ -34,12 +36,14 @@ public class ChartBarViewModel: ObservableObject {
         }
     }
     
+    
     public func changeData(_ data: [(String, Double)], animated: Bool = true) {
         isAnimated = animated
         withAnimation {
             self.data = data
         }
     }
+    
     
     private func updateAnimatedIndexes() {
         let newIndexes = Set(0..<data.count)
@@ -52,7 +56,4 @@ public class ChartBarViewModel: ObservableObject {
         }
         
     }
-    
-    
-    
 }

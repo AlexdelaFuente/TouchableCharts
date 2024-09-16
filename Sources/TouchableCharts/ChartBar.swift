@@ -20,6 +20,9 @@ import SwiftUI
 ///   - selectedBarColor: The color of the selected bar. Default is accent color.
 ///   - textColor: The color of the text labels. Default is black.
 ///   - selectedTextColor: The color of the selected text label. Default is accent color.
+///   - animateBars: If the bars are animated when view is created
+///   - animateScroll: If the bars are animated when view is created
+///   - scrollToEnd: If the view scroll to the end when the view is created
 
 
 @available(iOS 15.0, *)
@@ -29,19 +32,32 @@ public struct ChartBar: View {
     
     private let minBarHeight: CGFloat = 30
     
-    // Parámetros personalizables
-    var barSpacing: CGFloat = 20
-    var barWidth: CGFloat = 30
-    var barColor: Color = .gray
-    var selectedBarColor: Color = .accentColor
-    var textColor: Color = .black
-    var selectedTextColor: Color = .accentColor
+    // Parameters
+    var barSpacing: CGFloat
+    var barWidth: CGFloat
+    var barColor: Color
+    var selectedBarColor: Color
+    var textColor: Color
+    var selectedTextColor: Color
+    var animateBars: Bool
+    var animateScroll: Bool
+    var scrollToEnd: Bool
     
-    var areBarsAnimated: Bool = true
     
-    public init(viewModel: ChartBarViewModel) {
+    // Initializer
+    public init(viewModel: ChartBarViewModel, barSpacing: CGFloat = 20, barWidth: CGFloat = 30, barColor: Color = .gray, selectedBarColor: Color = .accentColor, textColor: Color = .black, selectedTextColor: Color = .accentColor, animateBars: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
         self.viewModel = viewModel
+        self.barSpacing = barSpacing
+        self.barWidth = barWidth
+        self.barColor = barColor
+        self.selectedBarColor = selectedBarColor
+        self.textColor = textColor
+        self.selectedTextColor = selectedTextColor
+        self.animateBars = animateBars
+        self.animateScroll = animateScroll
+        self.scrollToEnd = scrollToEnd
     }
+    
     
     public var body: some View {
         VStack {
@@ -122,12 +138,19 @@ public struct ChartBar: View {
                         .padding(.horizontal, 12).padding(.top)
                         
                     }.onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-                            withAnimation {
-                                scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)                                
+                        if scrollToEnd {
+                            if animateScroll {
+                                withAnimation {
+                                    scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
+                                }
+                            } else {
+                                scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                             }
-                            animateBarsSequentially()
                         }
+                        
+                        
+                        animateBarsSequentially()
+                        
                     }
                     .padding()
                 }
@@ -135,12 +158,9 @@ public struct ChartBar: View {
         }
     }
     
-    
-    
-    
-    
+
     private func animateBarsSequentially() {
-        if areBarsAnimated {
+        if animateBars {
             print("animatebars")
             for index in 0..<viewModel.data.count {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
@@ -168,57 +188,4 @@ public struct ChartBar: View {
     }
     
     
-}
-
-// MARK: - ChartBar Modifiers
-@available(iOS 15.0, *)
-extension ChartBar {
-    
-    public func barSpacing(_ spacing: CGFloat) -> some View {
-        var copy = self
-        copy.barSpacing = spacing
-        return copy
-    }
-    
-    
-    public func barWidth(_ width: CGFloat) -> some View {
-        var copy = self
-        copy.barWidth = width
-        return copy
-    }
-    
-    
-    public func barColor(_ color: Color) -> some View {
-        var copy = self
-        copy.barColor = color
-        return copy
-    }
-    
-    
-    public func selectedBarColor(_ color: Color) -> some View {
-        var copy = self
-        copy.selectedBarColor = color
-        return copy
-    }
-    
-    
-    public func textColor(_ color: Color) -> some View {
-        var copy = self
-        copy.textColor = color
-        return copy
-    }
-    
-    
-    public func selectedTextColor(_ color: Color) -> some View {
-        var copy = self
-        copy.selectedTextColor = color
-        return copy
-    }
-    
-    
-    public func setBarAnimation(_ bool: Bool) -> some View {
-        var copy = self
-        copy.areBarsAnimated = bool
-        return copy
-    }
 }
