@@ -166,7 +166,7 @@ public struct ChartBar: View {
         for index in 0..<viewModel.data.count {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
                 if animateBars {
-                    withAnimation(.easeInOut(duration: 0.5)) {
+                    let _ = withAnimation(.easeInOut(duration: 0.5)) {
                         viewModel.animatedIndexes.insert(index)
                     }
                 } else {
