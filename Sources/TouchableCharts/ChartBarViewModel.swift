@@ -25,4 +25,11 @@ public class ChartBarViewModel: ObservableObject {
         }
     }
     
+    
+    public func changeData(_ data: [(Date, Double)]) {
+        withAnimation {
+            self.data = data
+        }
+    }
+    
 }

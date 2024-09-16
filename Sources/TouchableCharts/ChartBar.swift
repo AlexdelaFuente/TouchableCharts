@@ -29,6 +29,7 @@ public struct ChartBar: View {
     
     
     @State private var animatedIndexes: Set<Int> = []
+    @State private var indexesWereAnimated: Bool = false
     
     private let minBarHeight: CGFloat = 30
     
@@ -72,7 +73,7 @@ public struct ChartBar: View {
                                         ZStack(alignment: .center) {
                                             Capsule()
                                                 .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : barColor.opacity(0.2))
-                                                .frame(width: barWidth, height: animatedIndexes.contains(index) ? availableHeight : 0)
+                                                .frame(width: barWidth, height: indexesWereAnimated ? (animatedIndexes.contains(index) ? availableHeight : 0) : availableHeight)
                                                 .overlay {
                                                     Capsule()
                                                         .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 0.4)
@@ -91,7 +92,7 @@ public struct ChartBar: View {
                                                 }
                                             }
                                             .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : barColor.opacity(0.6), lineWidth: lineWidth)
-                                            .frame(width: barWidth, height: animatedIndexes.contains(index) ? availableHeight : 0)
+                                            .frame(width: barWidth, height: indexesWereAnimated ? (animatedIndexes.contains(index) ? availableHeight : 0) : availableHeight)
                                             .mask {
                                                 Capsule()
                                             }
@@ -99,7 +100,7 @@ public struct ChartBar: View {
                                         
                                         Capsule()
                                             .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                            .frame(width: barWidth, height: animatedIndexes.contains(index) ? adjustedBarHeight : 0)
+                                            .frame(width: barWidth, height: indexesWereAnimated ? (animatedIndexes.contains(index) ? adjustedBarHeight : 0) : adjustedBarHeight)
                                             .overlay(
                                                 Capsule()
                                                     .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
@@ -152,6 +153,7 @@ public struct ChartBar: View {
                 }
             }
         }
+        indexesWereAnimated = true
     }
     
     
