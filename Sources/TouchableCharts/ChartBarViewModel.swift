@@ -23,7 +23,7 @@ public class ChartBarViewModel: ObservableObject {
     
     public init(data: [(String, Double)]) {
         self.data = data
-        self.updateAnimatedIndexes()
+        self.animatedIndexes.removeAll() // First launch
     }
     
     public func selectIndex(_ index: Int) {
