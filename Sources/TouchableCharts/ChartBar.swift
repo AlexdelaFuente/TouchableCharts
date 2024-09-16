@@ -69,7 +69,7 @@ public struct ChartBar: View {
                                         ZStack(alignment: .center) {
                                             Capsule()
                                                 .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : barColor.opacity(0.2))
-                                                .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? availableHeight : 10)
+                                                .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? availableHeight : 0)
                                                 .overlay {
                                                     Capsule()
                                                         .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 0.4)
@@ -88,7 +88,7 @@ public struct ChartBar: View {
                                                 }
                                             }
                                             .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : barColor.opacity(0.6), lineWidth: lineWidth)
-                                            .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? availableHeight : 10)
+                                            .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? availableHeight : 0)
                                             .mask {
                                                 Capsule()
                                             }
@@ -96,7 +96,7 @@ public struct ChartBar: View {
                                         
                                         Capsule()
                                             .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                            .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? adjustedBarHeight : 10)
+                                            .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? adjustedBarHeight : 0)
                                             .overlay(
                                                 Capsule()
                                                     .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
@@ -140,6 +140,7 @@ public struct ChartBar: View {
     
     
     private func animateBarsSequentially() {
+        print("Hola")
         if areBarsAnimated {
             for index in 0..<viewModel.data.count {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
