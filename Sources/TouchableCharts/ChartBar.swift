@@ -65,7 +65,7 @@ public struct ChartBar: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
                         let height = geometry.size.height
-                        let availableHeight = geometry.size.height * 0.85
+                        let availableHeight = geometry.size.height * 0.60
                         HStack(alignment: .bottom, spacing: barSpacing) {
                             ForEach(0..<data.count, id: \.self) { index in
                                 let item = data[index]
