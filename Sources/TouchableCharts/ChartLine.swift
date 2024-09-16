@@ -5,43 +5,46 @@
 //  Created by Alex de la Fuente Martín on 7/8/24.
 //
 
+/*
+ var pointDiameter: CGFloat
+ var selectedPointDiameter: CGFloat
+ var lineColor: Color
+ var pointColor: Color
+ var selectedPointColor: Color
+ var textColor: Color
+ var selectedTextColor: Color
+ */
+
 import SwiftUI
 
 @available(iOS 16.0, *)
-public struct ChartLine: View {
+struct ChartLine: View {
     
     @ObservedObject var viewModel: ChartLineViewModel
-    var data: [(Date, Double, Bool)]
+    
     
     @State private var animatedPoints: Bool = false
     @State private var animatedLines: Bool = false
     
-    private let lineWidth: CGFloat = 3
-    private let minChartHeight: CGFloat = 80
     private let maxChartHeight: CGFloat = 160
     
-    // Customizable parameters
+    var lineWidth: CGFloat
     var pointDiameter: CGFloat
     var selectedPointDiameter: CGFloat
+    var gridColor: Color
     var lineColor: Color
     var pointColor: Color
     var selectedPointColor: Color
     var textColor: Color
     var selectedTextColor: Color
     
-    public init(viewModel: ChartLineViewModel,
-                data: [(Date, Double, Bool)],
-                pointDiameter: CGFloat = 12,
-                selectedPointDiameter: CGFloat = 18,
-                lineColor: Color = .green,
-                pointColor: Color = .gray,
-                selectedPointColor: Color = .accentColor,
-                textColor: Color = .black,
-                selectedTextColor: Color = .accentColor) {
+    
+    init(viewModel: ChartLineViewModel, lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue) {
         self.viewModel = viewModel
-        self.data = data
+        self.lineWidth = lineWidth
         self.pointDiameter = pointDiameter
         self.selectedPointDiameter = selectedPointDiameter
+        self.gridColor = gridColor
         self.lineColor = lineColor
         self.pointColor = pointColor
         self.selectedPointColor = selectedPointColor
@@ -50,78 +53,91 @@ public struct ChartLine: View {
     }
     
     
+    // Computed properties
+    private var maxDataValue: Double {
+        viewModel.data.map { $0.1 }.max() ?? 1
+    }
+    private var minDataValue: Double {
+        viewModel.data.map { $0.1 }.min() ?? 1
+    }
+    private var valueRange: Double {
+        maxDataValue - minDataValue
+    }
+    
+    private var dataRange: Double {
+        maxDataValue - minDataValue
+    }
+    
+    private var step: Double {
+        let dataRange = maxDataValue - minDataValue
+        switch dataRange {
+        case ...50:
+            return 10.0
+        case ...100:
+            return 20.0
+        case ...500:
+            return 50.0
+        case ...1000:
+            return 100.0
+        case ...2000:
+            return 200.0
+        default:
+            return 500.0
+        }
+    }
+
+    private var points: [Double] {
+        let start = floor(minDataValue / step) * step
+        let end = ceil(maxDataValue / step) * step
+        
+        var points = stride(from: start, through: end, by: step).map { $0 }
+        
+        if maxDataValue < 50 && minDataValue > -50 {
+            points = [maxDataValue, 0]
+            if maxDataValue >= 25 {
+                points.append(contentsOf: [(maxDataValue * 0.75).rounded(), (maxDataValue * 0.5).rounded(), (maxDataValue * 0.25).rounded()])
+            } else if maxDataValue >= 15 {
+                points.append((maxDataValue / 2).rounded())
+            } else {
+                points.append(contentsOf: [(maxDataValue * 0.5).rounded(), (maxDataValue * 0.25).rounded()])
+            }
+            if minDataValue < 0 {
+                points.append(minDataValue)
+                if minDataValue < -25 {
+                    points.append(contentsOf: [(minDataValue * 0.75).rounded(), (minDataValue * 0.5).rounded(), (minDataValue * 0.25).rounded()])
+                } else if minDataValue < -15 {
+                    points.append(contentsOf: [(minDataValue * 0.66).rounded(), (minDataValue * 0.33).rounded()])
+                } else {
+                    points.append((minDataValue / 2).rounded())
+                }
+            }
+        }
+        
+        if minDataValue < 0 {
+            points.sort()
+            points.removeFirst()
+        }
+        
+        if abs(minDataValue) < (step / 2.5) {
+            points = points.filter { $0 != minDataValue }
+            points.append(0)
+        } else {
+            points = points.filter { $0 != minDataValue }
+            points.append(minDataValue)
+        }
+        
+        return points
+    }
+
+    
     public var body: some View {
         VStack {
             ZStack {
                 VStack {
                     GeometryReader { geometry in
                         let frame = geometry.frame(in: .local)
-                        let maxDataValue = data.map { $0.1 }.max() ?? 1
-                        let minDataValue = data.map { $0.1 }.min() ?? 0
-                        let valueRange = maxDataValue - minDataValue
                         
-                        let dataRange = maxDataValue - minDataValue
 
-                        var step: Double
-                        if dataRange <= 50 {
-                            let _ = step = 10.0
-                        } else if dataRange <= 100 {
-                            let _ = step = 20.0
-                        } else if dataRange <= 500 {
-                            let _ = step = 50.0
-                        } else if dataRange <= 1000 {
-                            let _ = step = 100.0
-                        } else if dataRange <= 2000 {
-                            let _ = step = 200.0
-                        } else {
-                            let _ = step = 500.0
-                        }
-
-                        let start = floor(minDataValue / step) * step
-                        let end = ceil(maxDataValue / step) * step
-                        var points = stride(from: start, through: end, by: step).map { $0 }
-                        
-                        if maxDataValue < 50 && minDataValue > -50 {
-                            let _ = points = []
-                            let _ = points.append(maxDataValue)
-                            let _ = points.append(0)
-                            if maxDataValue >= 25 {
-                                let _ = points.append((maxDataValue * 0.75).rounded())
-                                let _ = points.append((maxDataValue * 0.5).rounded())
-                                let _ = points.append((maxDataValue * 0.25).rounded())
-                            } else if maxDataValue >= 15 {
-                                let _ = points.append((maxDataValue / 2).rounded())
-                            } else if maxDataValue < 15 {
-                                let _ = points.append((maxDataValue * 0.5).rounded())
-                                let _ = points.append((maxDataValue * 0.25).rounded())
-                            }
-                            if minDataValue < 0 {
-                                let _ = points.append(minDataValue)
-                                if minDataValue < -25 {
-                                    let _ = points.append((minDataValue * 0.75).rounded())
-                                    let _ = points.append((minDataValue * 0.5).rounded())
-                                    let _ = points.append((minDataValue * 0.25).rounded())
-                                } else if minDataValue < -15 {
-                                    let _ = points.append((minDataValue * 0.66).rounded())
-                                    let _ = points.append((minDataValue * 0.33).rounded())
-                                } else if minDataValue > -15 {
-                                    let _ = points.append((minDataValue / 2).rounded())
-                                }
-                            }
-                        }
-                        
-                        if minDataValue < 0 {
-                            let _ = points.sort()
-                            let _ = points.removeFirst()
-                        }
-                        
-                        if abs(minDataValue) < (step / 2.5) {
-                            let _ = points = points.filter { $0 != minDataValue }
-                            let _ = points.append(0)
-                        } else {
-                            let _ = points = points.filter { $0 != minDataValue }
-                            let _ = points.append(minDataValue)
-                        }
                         
                         ForEach(points, id: \.self) { point in
                             let yPosition = frame.height - (frame.height * CGFloat((point - minDataValue) / valueRange))
@@ -129,34 +145,36 @@ public struct ChartLine: View {
                             Path { path in
                                 path.move(to: CGPoint(x: 16, y: yPosition))
                                 path.addLine(to: CGPoint(x: frame.width, y: yPosition))
-                            }.stroke(Color.gray, style: point == 0 ? StrokeStyle(lineWidth: 1) : StrokeStyle(lineWidth: 0.5, dash: [3]))
+                            }.stroke(gridColor, style: point == 0 ? StrokeStyle(lineWidth: 1) : StrokeStyle(lineWidth: 0.5, dash: [3]))
                             
                             Text("\(point.formatted())")
+                                .foregroundStyle(textColor)
                                 .font(.system(size: 12))
                                 .frame(maxWidth: .infinity, alignment: .trailing)
-                                .position(x: -150, y: yPosition)
+                                .position(x: -(frame.width/2.15), y: yPosition)
                         }
                     }
                     .frame(height: maxChartHeight)
                 }
                 .padding(.leading, 32)
                 
+                
                 ScrollViewReader { scrollProxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(alignment: .top) {
                             GeometryReader { geometry in
                                 let frame = geometry.frame(in: .local)
-                                let maxDataValue = data.map { $0.1 }.max() ?? 1
-                                let minDataValue = data.map { $0.1 }.min() ?? 0
+                                let maxDataValue = viewModel.data.map { $0.1 }.max() ?? 1
+                                let minDataValue = viewModel.data.map { $0.1 }.min() ?? 0
                                 let valueRange = maxDataValue - minDataValue
                                 
                                 ZStack {
                                     Path { path in
                                         var previousPoint: CGPoint?
                                         
-                                        for index in data.indices {
-                                            let point = data[index]
-                                            let xPosition = frame.width * CGFloat(index) / CGFloat(data.count - 1)
+                                        for index in viewModel.data.indices {
+                                            let point = viewModel.data[index]
+                                            let xPosition = frame.width * CGFloat(index) / CGFloat(viewModel.data.count - 1)
                                             let yPosition = frame.height - (frame.height * CGFloat((point.1 - minDataValue) / valueRange))
                                             
                                             let currentPoint = CGPoint(x: xPosition, y: yPosition)
@@ -174,18 +192,20 @@ public struct ChartLine: View {
                                     }
                                     .trim(from: 0, to: animatedLines ? 1 : 0)
                                     .stroke(lineColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                                    .animation(.easeInOut(duration: Double(data.count) * 0.2), value: animatedLines)
+                                    .animation(.easeInOut(duration: Double(viewModel.data.count) * 0.2), value: animatedLines)
                                     
-                                    ForEach(data.indices, id: \.self) { index in
-                                        let point = data[index]
-                                        let xPosition = frame.width * CGFloat(index) / CGFloat(data.count - 1)
+                                    ForEach(viewModel.data.indices, id: \.self) { index in
+                                        let point = viewModel.data[index]
+                                        let xPosition = frame.width * CGFloat(index) / CGFloat(viewModel.data.count - 1)
                                         let yPosition = frame.height - (frame.height * CGFloat((point.1 - minDataValue) / valueRange))
                                         
                                         Group {
                                             if !point.2 {
                                                 Circle()
                                                     .stroke(index == viewModel.selectedIndex ? selectedPointColor : pointColor, lineWidth: 3)
-                                                    .background(Circle().fill(Color.clear))
+                                                    .background(
+                                                        Circle().fill(Color.clear)
+                                                    )
                                                     .frame(width: index == viewModel.selectedIndex ? selectedPointDiameter : pointDiameter, height: index == viewModel.selectedIndex ? selectedPointDiameter : pointDiameter)
                                                     .position(x: xPosition, y: yPosition)
                                                     .scaleEffect(animatedPoints ? 1 : 0.0)
@@ -200,14 +220,15 @@ public struct ChartLine: View {
                                             }
                                             
                                             Text(formattedMonth(from: point.0))
-                                                .lineLimit(1)
+                                                .foregroundStyle(index == viewModel.selectedIndex ? selectedTextColor : textColor)
                                                 .font(.system(size: 14))
                                                 .fontWeight(index == viewModel.selectedIndex ? .heavy : .medium)
-                                                .foregroundColor(index == viewModel.selectedIndex ? selectedTextColor : textColor)
                                                 .position(x: xPosition, y: frame.height + 20)
                                         }.onTapGesture {
-                                            withAnimation(.easeInOut) {
-                                                viewModel.selectedIndex = index
+                                            if viewModel.selectedIndex != index {
+                                                withAnimation(.easeInOut) {
+                                                    viewModel.selectedIndex = index
+                                                }
                                             }
                                         }
                                     }
@@ -217,13 +238,12 @@ public struct ChartLine: View {
                             .padding(.leading, 8)
                         }
                         .padding(.vertical, 28)
-                        .frame(minWidth: CGFloat(data.count) * 50)
-                        .padding(.leading, 8)
-                        .padding(.trailing, 16)
+                        .frame(minWidth: CGFloat(viewModel.data.count) * 50)
+                        .padding(.horizontal, 16)
                         .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + Double(data.count) * 0.08) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + Double(viewModel.data.count) * 0.08) {
                                 withAnimation {
-                                    scrollProxy.scrollTo(data.count - 1, anchor: .trailing)
+                                    scrollProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                                 }
                             }
                             animatedPoints = true
