@@ -64,7 +64,8 @@ public struct ChartBar: View {
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
-                        let availableHeight = geometry.size.height
+                        let height = geometry.size.height
+                        let availableHeight = geometry.size.height * 0.85
                         HStack(alignment: .bottom, spacing: barSpacing) {
                             ForEach(0..<data.count, id: \.self) { index in
                                 let item = data[index]
@@ -118,7 +119,7 @@ public struct ChartBar: View {
                                         .frame(width: barWidth)
                                         .padding(.top, 4)
                                 }
-                                .frame(height: availableHeight, alignment: .bottom)
+                                .frame(height: height, alignment: .bottom)
                                 .id(index)
                                 .onTapGesture {
                                     if viewModel.selectedIndex != index {
