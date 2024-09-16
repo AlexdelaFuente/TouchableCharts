@@ -11,7 +11,7 @@ import SwiftUI
 public class ChartBarViewModel: ObservableObject {
     @Published public var selectedIndex: Int = 0
     
-    @Published public var data: [(Date, Double)] = [] {
+    @Published public var data: [(String, Double)] = [] {
         didSet {
             updateAnimatedIndexes()
         }
@@ -21,7 +21,7 @@ public class ChartBarViewModel: ObservableObject {
     
     private var isAnimated = true
     
-    public init(data: [(Date, Double)]) {
+    public init(data: [(String, Double)]) {
         self.data = data
         self.updateAnimatedIndexes()
     }
@@ -34,17 +34,11 @@ public class ChartBarViewModel: ObservableObject {
         }
     }
     
-    public func changeData(_ data: [(Date, Double)], animated: Bool = true) {
+    public func changeData(_ data: [(String, Double)], animated: Bool = true) {
         isAnimated = animated
-        if animated {
-            withAnimation {
-                self.data = data
-            }
-        } else {
+        withAnimation {
             self.data = data
         }
-        
-        
     }
     
     private func updateAnimatedIndexes() {

@@ -102,7 +102,7 @@ public struct ChartBar: View {
                                                     .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
                                             )
                                     }
-                                    Text(formattedMonth(from: item.0))
+                                    Text(item.0)
                                         .font(.system(size: 12))
                                         .fontWeight(viewModel.selectedIndex == index ? .heavy : .medium)
                                         .foregroundColor(viewModel.selectedIndex == index ? selectedTextColor : textColor)
@@ -132,11 +132,7 @@ public struct ChartBar: View {
     }
     
     
-    private func formattedMonth(from date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM"
-        return dateFormatter.string(from: date)
-    }
+    
     
     
     private func animateBarsSequentially() {
