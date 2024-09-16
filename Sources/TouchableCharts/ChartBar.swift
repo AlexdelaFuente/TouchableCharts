@@ -122,10 +122,10 @@ public struct ChartBar: View {
                         .padding(.horizontal, 12).padding(.top)
                         
                     }.onAppear {
-                        withAnimation(.linear(duration: 2)) {
-                            scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)         
+                        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+                            scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
+                            animateBarsSequentially()
                         }
-                        animateBarsSequentially()
                     }
                     .padding()
                 }
