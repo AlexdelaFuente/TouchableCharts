@@ -39,7 +39,7 @@ public struct ChartLine: View {
     var selectedTextColor: Color
     
     
-    init(viewModel: ChartLineViewModel, lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue) {
+    public init(viewModel: ChartLineViewModel, lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue) {
         self.viewModel = viewModel
         self.lineWidth = lineWidth
         self.pointDiameter = pointDiameter
