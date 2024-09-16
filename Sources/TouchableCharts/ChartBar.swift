@@ -14,7 +14,6 @@ import SwiftUI
 ///
 /// - Parameters:
 ///   - viewModel: The view model managing the state of the bar chart.
-///   - data: The data to be displayed, with each entry containing a date and a value.
 ///   - barSpacing: The spacing between bars. Default is 20.
 ///   - barWidth: The width of each bar. Default is 30.
 ///   - barColor: The color of the bars. Default is gray.
@@ -27,36 +26,24 @@ import SwiftUI
 public struct ChartBar: View {
     
     @ObservedObject var viewModel: ChartBarViewModel
-    var data: [(Date, Double)]
+    
     
     @State private var animatedIndexes: Set<Int> = []
     
     private let minBarHeight: CGFloat = 30
     
     // Parámetros personalizables
-    var barSpacing: CGFloat
-    var barWidth: CGFloat
-    var barColor: Color
-    var selectedBarColor: Color
-    var textColor: Color
-    var selectedTextColor: Color
+    var barSpacing: CGFloat = 20
+    var barWidth: CGFloat = 30
+    var barColor: Color = .gray
+    var selectedBarColor: Color = .accentColor
+    var textColor: Color = .black
+    var selectedTextColor: Color = .accentColor
     
-    public init(viewModel: ChartBarViewModel,
-                data: [(Date, Double)],
-                barSpacing: CGFloat = 20,
-                barWidth: CGFloat = 30,
-                barColor: Color = .gray,
-                selectedBarColor: Color = .accentColor,
-                textColor: Color = .black,
-                selectedTextColor: Color = .accentColor) {
+    var areBarsAnimated: Bool = true
+    
+    public init(viewModel: ChartBarViewModel) {
         self.viewModel = viewModel
-        self.data = data
-        self.barSpacing = barSpacing
-        self.barWidth = barWidth
-        self.barColor = barColor
-        self.selectedBarColor = selectedBarColor
-        self.textColor = textColor
-        self.selectedTextColor = selectedTextColor
     }
     
     public var body: some View {
@@ -64,15 +51,15 @@ public struct ChartBar: View {
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
-                        let height = geometry.size.height * (0.90 + calcularNumero(from: geometry.size.height))
+                        let height = geometry.size.height * (0.90 + calculateNumber(from: geometry.size.height))
                         let availableHeight = height * (0.90)
                         let _ = print(height)
                         let _ = print(".")
                         let _ = print(availableHeight)
                         HStack(alignment: .bottom, spacing: barSpacing) {
-                            ForEach(0..<data.count, id: \.self) { index in
-                                let item = data[index]
-                                let maxDataValue = data.map { $0.1 }.max() ?? 1
+                            ForEach(0..<viewModel.data.count, id: \.self) { index in
+                                let item = viewModel.data[index]
+                                let maxDataValue = viewModel.data.map { $0.1 }.max() ?? 1
                                 let barHeight = CGFloat(item.1 / maxDataValue) * availableHeight
                                 
                                 let adjustedBarHeight = max(barHeight, minBarHeight)
@@ -84,11 +71,11 @@ public struct ChartBar: View {
                                         
                                         ZStack(alignment: .center) {
                                             Capsule()
-                                                .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : Color.gray.opacity(0.2))
+                                                .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : barColor.opacity(0.2))
                                                 .frame(width: barWidth, height: animatedIndexes.contains(index) ? availableHeight : 0)
                                                 .overlay {
                                                     Capsule()
-                                                        .stroke(viewModel.selectedIndex == index ? selectedBarColor : Color.gray, lineWidth: 0.4)
+                                                        .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 0.4)
                                                 }
                                             
                                             let lineSpacing: CGFloat = 6
@@ -103,17 +90,11 @@ public struct ChartBar: View {
                                                     currentX += lineSpacing
                                                 }
                                             }
-                                            .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : Color.gray.opacity(0.6), lineWidth: lineWidth)
+                                            .stroke(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.6) : barColor.opacity(0.6), lineWidth: lineWidth)
                                             .frame(width: barWidth, height: animatedIndexes.contains(index) ? availableHeight : 0)
                                             .mask {
                                                 Capsule()
                                             }
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
                                         }
                                         
                                         Capsule()
@@ -146,42 +127,43 @@ public struct ChartBar: View {
                         .padding(.horizontal, 12).padding(.top)
                     }
                 }.onAppear {
-                    scrollViewProxy.scrollTo(data.count - 1, anchor: .trailing)
+                    scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                     animateBarsSequentially()
                 }.padding()
             }
         }
     }
     
-    func formattedMonth(from date: Date) -> String {
+    
+    private func formattedMonth(from date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM"
         return dateFormatter.string(from: date)
     }
     
+    
     private func animateBarsSequentially() {
-        for index in 0..<data.count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
-                let _ = withAnimation(.easeInOut(duration: 0.5)) {
-                    animatedIndexes.insert(index)
+        if areBarsAnimated {
+            for index in 0..<viewModel.data.count {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
+                    let _ = withAnimation(.easeInOut(duration: 0.5)) {
+                        animatedIndexes.insert(index)
+                    }
                 }
             }
         }
     }
     
-    private func calcularNumero(from numero: Double) -> Double {
-        // Rango de entrada (150 a 750)
+    
+    private func calculateNumber(from numero: Double) -> Double {
         let minNumero: Double = 150
         let maxNumero: Double = 750
         
-        // Rango de salida (-0.05 a 0.05)
         let minSalida: Double = -0.05
         let maxSalida: Double = 0.05
         
-        // Limitar el número dentro del rango esperado
         let numeroClamped = min(max(numero, minNumero), maxNumero)
         
-        // Interpolar el valor usando la fórmula de mapeo lineal
         let resultado = minSalida + (numeroClamped - minNumero) * (maxSalida - minSalida) / (maxNumero - minNumero)
         
         return resultado
@@ -190,3 +172,55 @@ public struct ChartBar: View {
     
 }
 
+// MARK: - ChartBar Modifiers
+@available(iOS 15.0, *)
+extension ChartBar {
+    
+    func barSpacing(_ spacing: CGFloat) -> some View {
+        var copy = self
+        copy.barSpacing = spacing
+        return copy
+    }
+    
+    
+    func barWidth(_ width: CGFloat) -> some View {
+        var copy = self
+        copy.barWidth = width
+        return copy
+    }
+    
+    
+    func barColor(_ color: Color) -> some View {
+        var copy = self
+        copy.barColor = color
+        return copy
+    }
+    
+    
+    func selectedBarColor(_ color: Color) -> some View {
+        var copy = self
+        copy.selectedBarColor = color
+        return copy
+    }
+    
+    
+    func textColor(_ color: Color) -> some View {
+        var copy = self
+        copy.textColor = color
+        return copy
+    }
+    
+    
+    func selectedTextColor(_ color: Color) -> some View {
+        var copy = self
+        copy.selectedTextColor = color
+        return copy
+    }
+    
+    
+    func setBarAnimation(_ bool: Bool) -> some View {
+        var copy = self
+        copy.areBarsAnimated = bool
+        return copy
+    }
+}
