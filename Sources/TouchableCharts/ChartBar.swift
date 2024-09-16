@@ -46,13 +46,11 @@ public struct ChartBar: View {
     public var body: some View {
         VStack {
             ScrollViewReader { scrollViewProxy in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    GeometryReader { geometry in
-                        let height = geometry.size.height * (0.90 + calculateNumber(from: geometry.size.height))
-                        let availableHeight = height * (0.90)
-                        let _ = print(height)
-                        let _ = print(".")
-                        let _ = print(availableHeight)
+                GeometryReader { geometry in
+                    let height = geometry.size.height * (0.90 + calculateNumber(from: geometry.size.height))
+                    let availableHeight = height * (0.90)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        
                         HStack(alignment: .bottom, spacing: barSpacing) {
                             ForEach(0..<viewModel.data.count, id: \.self) { index in
                                 let item = viewModel.data[index]
@@ -122,11 +120,13 @@ public struct ChartBar: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, 12).padding(.top)
+                        
+                    }.onAppear {
+                        scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
+                        animateBarsSequentially()
                     }
-                }.onAppear {
-                    scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
-                    animateBarsSequentially()
-                }.padding()
+                    .padding()
+                }
             }
         }
     }
