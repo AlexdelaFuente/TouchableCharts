@@ -64,7 +64,7 @@ public struct ChartBar: View {
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
-                        let height = geometry.size.height * calcularValor(from: geometry.size.height)
+                        let height = geometry.size.height * 0.90
                         let availableHeight = height * 0.85
                         let _ = print(height)
                         let _ = print(".")
@@ -153,7 +153,7 @@ public struct ChartBar: View {
         }
     }
     
-    private func formattedMonth(from date: Date) -> String {
+    func formattedMonth(from date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM"
         return dateFormatter.string(from: date)
@@ -167,24 +167,6 @@ public struct ChartBar: View {
                 }
             }
         }
-    }
-    
-    private func calcularValor(from numero: Double) -> Double {
-        // Rango de entrada (100 a 900)
-        let minNumero: Double = 100
-        let maxNumero: Double = 900
-        
-        // Rango de salida (0.60 a 0.95)
-        let minSalida: Double = 0.60
-        let maxSalida: Double = 0.95
-        
-        // Limitar el número dentro del rango esperado
-        let numeroClamped = min(max(numero, minNumero), maxNumero)
-        
-        // Interpolar el valor usando la fórmula de mapeo lineal
-        let resultado = minSalida + (numeroClamped - minNumero) * (maxSalida - minSalida) / (maxNumero - minNumero)
-        
-        return resultado
     }
 }
 
