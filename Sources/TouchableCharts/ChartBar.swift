@@ -140,12 +140,11 @@ public struct ChartBar: View {
                     }.onAppear {
                         if scrollToEnd {
                             if animateScroll {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                                    withAnimation {
+                                withAnimation {
                                     
-                                        scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)                                        
-                                    }
+                                    scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                                 }
+                                
                             } else {
                                 scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                             }
