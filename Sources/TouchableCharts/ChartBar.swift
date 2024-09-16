@@ -140,7 +140,6 @@ public struct ChartBar: View {
     
     
     private func animateBarsSequentially() {
-        print("Hola")
         if areBarsAnimated {
             for index in 0..<viewModel.data.count {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {

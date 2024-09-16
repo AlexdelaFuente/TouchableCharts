@@ -35,10 +35,15 @@ public class ChartBarViewModel: ObservableObject {
     }
     
     public func changeData(_ data: [(Date, Double)], animated: Bool = true) {
-        isAnimated = false
-        withAnimation {
+        isAnimated = animated
+        if animated {
+            withAnimation {
+                self.data = data
+            }
+        } else {
             self.data = data
         }
+        
         
     }
     
