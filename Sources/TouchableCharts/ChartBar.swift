@@ -123,7 +123,9 @@ public struct ChartBar: View {
                         
                     }.onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-                            scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
+                            withAnimation {
+                                scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)                                
+                            }
                             animateBarsSequentially()
                         }
                     }
