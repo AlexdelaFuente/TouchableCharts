@@ -65,7 +65,10 @@ public struct ChartBar: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
                         let height = geometry.size.height
-                        let availableHeight = geometry.size.height * 0.60
+                        let availableHeight = height * 0.85
+                        let _ = print(height)
+                        let _ = print(".")
+                        let _ = print(availableHeight)
                         HStack(alignment: .bottom, spacing: barSpacing) {
                             ForEach(0..<data.count, id: \.self) { index in
                                 let item = data[index]
@@ -75,7 +78,10 @@ public struct ChartBar: View {
                                 let adjustedBarHeight = max(barHeight, minBarHeight)
                                 
                                 VStack {
+                                    
                                     ZStack(alignment: .bottom) {
+                                        
+                                        
                                         ZStack(alignment: .center) {
                                             Capsule()
                                                 .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : Color.gray.opacity(0.2))
@@ -91,7 +97,7 @@ public struct ChartBar: View {
                                             Path { path in
                                                 var currentX: CGFloat = 0
                                                 
-                                                while currentX < barWidth + availableHeight {
+                                                while currentX < 30 + availableHeight {
                                                     path.move(to: CGPoint(x: currentX, y: 0))
                                                     path.addLine(to: CGPoint(x: currentX - availableHeight, y: availableHeight))
                                                     currentX += lineSpacing
@@ -102,6 +108,12 @@ public struct ChartBar: View {
                                             .mask {
                                                 Capsule()
                                             }
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
                                         }
                                         
                                         Capsule()
@@ -157,3 +169,4 @@ public struct ChartBar: View {
         }
     }
 }
+
