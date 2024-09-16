@@ -95,7 +95,7 @@ public struct ChartBar: View {
                                             Path { path in
                                                 var currentX: CGFloat = 0
                                                 
-                                                while currentX < 30 + availableHeight {
+                                                while currentX < barWidth + availableHeight {
                                                     path.move(to: CGPoint(x: currentX, y: 0))
                                                     path.addLine(to: CGPoint(x: currentX - availableHeight, y: availableHeight))
                                                     currentX += lineSpacing
@@ -141,8 +141,8 @@ public struct ChartBar: View {
                         if scrollToEnd {
                             if animateScroll {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                                    withAnimation(.linear(duration: Double(viewModel.data.count) * 1)) {
-                                        scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
+                                    withAnimation {
+                                        scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)                                        
                                     }
                                 }
                             } else {
