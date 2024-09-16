@@ -219,7 +219,7 @@ struct ChartLine: View {
                                                     .animation(.snappy.delay(Double(index) * 0.1), value: animatedPoints)
                                             }
                                             
-                                            Text(formattedMonth(from: point.0))
+                                            Text(point.0)
                                                 .foregroundStyle(index == viewModel.selectedIndex ? selectedTextColor : textColor)
                                                 .font(.system(size: 14))
                                                 .fontWeight(index == viewModel.selectedIndex ? .heavy : .medium)
@@ -256,17 +256,4 @@ struct ChartLine: View {
         .padding()
     }
     
-    
-    func formattedDate(from date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d"
-        return dateFormatter.string(from: date)
-    }
-    
-    
-    func formattedMonth(from date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM"
-        return dateFormatter.string(from: date)
-    }
 }
