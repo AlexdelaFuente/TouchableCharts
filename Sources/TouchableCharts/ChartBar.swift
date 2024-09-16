@@ -176,49 +176,49 @@ public struct ChartBar: View {
 @available(iOS 15.0, *)
 extension ChartBar {
     
-    func barSpacing(_ spacing: CGFloat) -> some View {
+    public func barSpacing(_ spacing: CGFloat) -> some View {
         var copy = self
         copy.barSpacing = spacing
         return copy
     }
     
     
-    func barWidth(_ width: CGFloat) -> some View {
+    public func barWidth(_ width: CGFloat) -> some View {
         var copy = self
         copy.barWidth = width
         return copy
     }
     
     
-    func barColor(_ color: Color) -> some View {
+    public func barColor(_ color: Color) -> some View {
         var copy = self
         copy.barColor = color
         return copy
     }
     
     
-    func selectedBarColor(_ color: Color) -> some View {
+    public func selectedBarColor(_ color: Color) -> some View {
         var copy = self
         copy.selectedBarColor = color
         return copy
     }
     
     
-    func textColor(_ color: Color) -> some View {
+    public func textColor(_ color: Color) -> some View {
         var copy = self
         copy.textColor = color
         return copy
     }
     
     
-    func selectedTextColor(_ color: Color) -> some View {
+    public func selectedTextColor(_ color: Color) -> some View {
         var copy = self
         copy.selectedTextColor = color
         return copy
     }
     
     
-    func setBarAnimation(_ bool: Bool) -> some View {
+    public func setBarAnimation(_ bool: Bool) -> some View {
         var copy = self
         copy.areBarsAnimated = bool
         return copy

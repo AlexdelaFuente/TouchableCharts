@@ -12,7 +12,9 @@ public class ChartBarViewModel: ObservableObject {
     @Published public var selectedIndex: Int = 0
     @Published public var data: [(Date, Double)] = []
     
-    public init() {}
+    public init(data: [(Date, Double)]) {
+        self.data = data
+    }
     
     
     public func selectIndex(_ index: Int) {
