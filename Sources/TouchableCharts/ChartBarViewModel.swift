@@ -32,10 +32,15 @@ public class ChartBarViewModel: ObservableObject {
         }
     }
     
-    public func changeData(_ data: [(Date, Double)]) {
-        withAnimation {
+    public func changeData(_ data: [(Date, Double)], animated: Bool = true) {
+        if animated {
+            withAnimation {
+                self.data = data
+            }
+        } else {
             self.data = data
         }
+        
     }
     
     private func updateAnimatedIndexes() {
@@ -45,4 +50,7 @@ public class ChartBarViewModel: ObservableObject {
             self.animatedIndexes = newIndexes
         }
     }
+    
+    
+    
 }
