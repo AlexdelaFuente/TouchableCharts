@@ -64,7 +64,7 @@ public struct ChartBar: View {
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     GeometryReader { geometry in
-                        let height = geometry.size.height * 0.90
+                        let height = geometry.size.height * (0.90 + calcularNumero(from: geometry.size.height))
                         let availableHeight = height * 0.85
                         let _ = print(height)
                         let _ = print(".")
@@ -168,5 +168,25 @@ public struct ChartBar: View {
             }
         }
     }
+    
+    private func calcularNumero(from numero: Double) -> Double {
+        // Rango de entrada (150 a 750)
+        let minNumero: Double = 150
+        let maxNumero: Double = 750
+        
+        // Rango de salida (-0.05 a 0.05)
+        let minSalida: Double = -0.05
+        let maxSalida: Double = 0.05
+        
+        // Limitar el número dentro del rango esperado
+        let numeroClamped = min(max(numero, minNumero), maxNumero)
+        
+        // Interpolar el valor usando la fórmula de mapeo lineal
+        let resultado = minSalida + (numeroClamped - minNumero) * (maxSalida - minSalida) / (maxNumero - minNumero)
+        
+        return resultado
+    }
+    
+    
 }
 
