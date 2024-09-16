@@ -161,19 +161,21 @@ public struct ChartBar: View {
         }
     }
     
-
+    
     private func animateBarsSequentially() {
         for index in 0..<viewModel.data.count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
-                if animateBars {
+            if animateBars {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
+                    
                     let _ = withAnimation(.easeInOut(duration: 0.5)) {
                         viewModel.animatedIndexes.insert(index)
                     }
-                } else {
-                    viewModel.animatedIndexes.insert(index)
                 }
-                
+            } else {
+                viewModel.animatedIndexes.insert(index)
             }
+            
+            
         }
     }
     
