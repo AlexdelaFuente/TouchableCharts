@@ -129,8 +129,9 @@ public struct ChartBar: View {
                                 .onTapGesture {
                                     if viewModel.selectedIndex != index {
                                         withAnimation(.easeInOut(duration: 0.15)) {
-                                            viewModel.selectedIndex = index
                                             onBarTap(index)
+                                            viewModel.selectedIndex = index
+                                            print("adios")
                                         }
                                     }
                                 }

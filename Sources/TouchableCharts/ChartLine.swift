@@ -229,6 +229,7 @@ public struct ChartLine: View {
                                                 .position(x: xPosition, y: frame.height + 20)
                                         }.onTapGesture {
                                             if viewModel.selectedIndex != index {
+                                                onPointTap(index)
                                                 withAnimation(.easeInOut) {
                                                     viewModel.selectedIndex = index
                                                 }
