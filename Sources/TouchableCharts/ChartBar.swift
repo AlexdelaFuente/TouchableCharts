@@ -30,9 +30,8 @@ public struct ChartBar: View {
     
     @ObservedObject var viewModel: ChartBarViewModel
     
-    private let minBarHeight: CGFloat = 30
-    
-    // Parameters
+    //Parameters
+    var onBarTap: (Int) -> Void
     var barSpacing: CGFloat
     var barWidth: CGFloat
     var barColor: Color
@@ -45,8 +44,9 @@ public struct ChartBar: View {
     
     
     // Initializer
-    public init(viewModel: ChartBarViewModel, barSpacing: CGFloat = 20, barWidth: CGFloat = 30, barColor: Color = .gray, selectedBarColor: Color = .accentColor, textColor: Color = .black, selectedTextColor: Color = .accentColor, animateBars: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
+    public init(viewModel: ChartBarViewModel, onBarTap: @escaping (Int) -> Void ,barSpacing: CGFloat = 20, barWidth: CGFloat = 30, barColor: Color = .gray, selectedBarColor: Color = .accentColor, textColor: Color = .black, selectedTextColor: Color = .accentColor, animateBars: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
         self.viewModel = viewModel
+        self.onBarTap = onBarTap
         self.barSpacing = barSpacing
         self.barWidth = barWidth
         self.barColor = barColor
@@ -73,7 +73,7 @@ public struct ChartBar: View {
                                 let maxDataValue = viewModel.data.map { $0.1 }.max() ?? 1
                                 let barHeight = CGFloat(item.1 / maxDataValue) * availableHeight
                                 
-                                let adjustedBarHeight = max(barHeight, minBarHeight)
+                                let adjustedBarHeight = max(barHeight, barWidth)
                                 
                                 VStack {
                                     
@@ -110,7 +110,7 @@ public struct ChartBar: View {
                                         
                                         Capsule()
                                             .fill(item.1 == 0.0 ? Color.clear : (viewModel.selectedIndex == index ? selectedBarColor : barColor))
-                                            .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? barWidth : 0)
+                                            .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? adjustedBarHeight : 0)
                                             .overlay(
                                                 Capsule()
                                                     .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 3)
@@ -130,6 +130,7 @@ public struct ChartBar: View {
                                     if viewModel.selectedIndex != index {
                                         withAnimation(.easeInOut(duration: 0.15)) {
                                             viewModel.selectedIndex = index
+                                            onBarTap(index)
                                         }
                                     }
                                 }

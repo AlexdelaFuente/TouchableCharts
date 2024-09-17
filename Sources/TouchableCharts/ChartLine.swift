@@ -28,6 +28,8 @@ public struct ChartLine: View {
     
     private let maxChartHeight: CGFloat = 160
     
+    //Parameters
+    var onPointTap: (Int) -> Void
     var lineWidth: CGFloat
     var pointDiameter: CGFloat
     var selectedPointDiameter: CGFloat
@@ -38,9 +40,10 @@ public struct ChartLine: View {
     var textColor: Color
     var selectedTextColor: Color
     
-    
-    public init(viewModel: ChartLineViewModel, lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue) {
+    //Initializer
+    public init(viewModel: ChartLineViewModel, onPointTap: @escaping (Int) -> Void ,lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue) {
         self.viewModel = viewModel
+        self.onPointTap = onPointTap
         self.lineWidth = lineWidth
         self.pointDiameter = pointDiameter
         self.selectedPointDiameter = selectedPointDiameter
