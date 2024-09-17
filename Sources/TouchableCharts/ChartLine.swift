@@ -5,28 +5,16 @@
 //  Created by Alex de la Fuente Martín on 7/8/24.
 //
 
-/*
- var pointDiameter: CGFloat
- var selectedPointDiameter: CGFloat
- var lineColor: Color
- var pointColor: Color
- var selectedPointColor: Color
- var textColor: Color
- var selectedTextColor: Color
- */
-
 import SwiftUI
+
 
 @available(iOS 16.0, *)
 public struct ChartLine: View {
     
     @ObservedObject var viewModel: ChartLineViewModel
     
-    
     @State private var animatedPoints: Bool = false
     @State private var animatedLines: Bool = false
-    
-    private let maxChartHeight: CGFloat = 160
     
     //Parameters
     var onPointTap: (Int) -> Void
@@ -39,9 +27,14 @@ public struct ChartLine: View {
     var selectedPointColor: Color
     var textColor: Color
     var selectedTextColor: Color
+    var animateLine: Bool
+    var animatePoints: Bool
+    var animateScroll: Bool
+    var scrollToEnd: Bool
+    
     
     //Initializer
-    public init(viewModel: ChartLineViewModel, onPointTap: @escaping (Int) -> Void ,lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue) {
+    public init(viewModel: ChartLineViewModel, onPointTap: @escaping (Int) -> Void ,lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue, animateLine: Bool = true, animatePoints: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
         self.viewModel = viewModel
         self.onPointTap = onPointTap
         self.lineWidth = lineWidth
@@ -53,6 +46,12 @@ public struct ChartLine: View {
         self.selectedPointColor = selectedPointColor
         self.textColor = textColor
         self.selectedTextColor = selectedTextColor
+        self.animateLine = animateLine
+        self.animatePoints = animatePoints
+        self.animateScroll = animateScroll
+        self.scrollToEnd = scrollToEnd
+        
+        onPointTap(viewModel.selectedIndex)
     }
     
     
@@ -134,13 +133,12 @@ public struct ChartLine: View {
 
     
     public var body: some View {
-        VStack {
+        GeometryReader { geometry in
+            let height = geometry.size.height
             ZStack {
                 VStack {
                     GeometryReader { geometry in
                         let frame = geometry.frame(in: .local)
-                        
-
                         
                         ForEach(points, id: \.self) { point in
                             let yPosition = frame.height - (frame.height * CGFloat((point - minDataValue) / valueRange))
@@ -157,7 +155,7 @@ public struct ChartLine: View {
                                 .position(x: -(frame.width/2.15), y: yPosition)
                         }
                     }
-                    .frame(height: maxChartHeight)
+                    .frame(height: height)
                 }
                 .padding(.leading, 32)
                 
@@ -195,7 +193,9 @@ public struct ChartLine: View {
                                     }
                                     .trim(from: 0, to: animatedLines ? 1 : 0)
                                     .stroke(lineColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                                    .animation(.easeInOut(duration: Double(viewModel.data.count) * 0.2), value: animatedLines)
+                                    .if(animateLine){ content in
+                                        content.animation(.easeInOut(duration: Double(viewModel.data.count) * 0.2), value: animatedLines)
+                                    }
                                     
                                     ForEach(viewModel.data.indices, id: \.self) { index in
                                         let point = viewModel.data[index]
@@ -212,22 +212,31 @@ public struct ChartLine: View {
                                                     .frame(width: index == viewModel.selectedIndex ? selectedPointDiameter : pointDiameter, height: index == viewModel.selectedIndex ? selectedPointDiameter : pointDiameter)
                                                     .position(x: xPosition, y: yPosition)
                                                     .scaleEffect(animatedPoints ? 1 : 0.0)
-                                                    .animation(.snappy.delay(Double(index) * 0.1), value: animatedPoints)
+                                                    .if(animatePoints) { content in
+                                                        content.animation(.snappy.delay(Double(index) * 0.1), value: animatedPoints)
+                                                    }
                                             } else {
                                                 Circle()
                                                     .fill(index == viewModel.selectedIndex ? selectedPointColor : pointColor)
                                                     .frame(width: index == viewModel.selectedIndex ? selectedPointDiameter : pointDiameter, height: index == viewModel.selectedIndex ? selectedPointDiameter : pointDiameter)
                                                     .position(x: xPosition, y: yPosition)
                                                     .scaleEffect(animatedPoints ? 1 : 0.0)
-                                                    .animation(.snappy.delay(Double(index) * 0.1), value: animatedPoints)
+                                                    .if(animatePoints) { content in
+                                                        content.animation(.snappy.delay(Double(index) * 0.1), value: animatedPoints)
+                                                    }
                                             }
                                             
                                             Text(point.0)
+                                                .lineLimit(1)
+                                                .truncationMode(.tail)
+                                                .fixedSize(horizontal: false, vertical: true)
+                                                .frame(width: 50)
                                                 .foregroundStyle(index == viewModel.selectedIndex ? selectedTextColor : textColor)
                                                 .font(.system(size: 14))
                                                 .fontWeight(index == viewModel.selectedIndex ? .heavy : .medium)
                                                 .position(x: xPosition, y: frame.height + 20)
-                                        }.onTapGesture {
+                                        }
+                                        .onTapGesture {
                                             if viewModel.selectedIndex != index {
                                                 onPointTap(index)
                                                 withAnimation(.easeInOut) {
@@ -238,26 +247,47 @@ public struct ChartLine: View {
                                     }
                                 }
                             }
-                            .frame(height: maxChartHeight)
+                            .frame(height: height)
                             .padding(.leading, 8)
                         }
                         .padding(.vertical, 28)
                         .frame(minWidth: CGFloat(viewModel.data.count) * 50)
                         .padding(.horizontal, 16)
                         .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + Double(viewModel.data.count) * 0.08) {
-                                withAnimation {
+                            if scrollToEnd {
+                                if animateScroll {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + Double(viewModel.data.count) * 0.08) {
+                                        withAnimation {
+                                            scrollProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
+                                        }
+                                    }
+                                } else {
                                     scrollProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                                 }
                             }
                             animatedPoints = true
                             animatedLines = true
                         }
-                    }.padding(.leading, 48)
+                    }
+                    .padding(.leading, 48)
                 }
             }
         }
-        .padding()
+        .padding(.trailing)
+        .padding(.bottom, 60)
+        .padding(.top, -12)
     }
-    
+}
+
+
+//MARK: - If View Extension
+@available(iOS 16.0, *)
+fileprivate extension View {
+    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
 }

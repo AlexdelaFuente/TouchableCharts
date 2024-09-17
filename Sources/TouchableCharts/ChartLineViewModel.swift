@@ -8,12 +8,12 @@
 import SwiftUI
 
 
-@available(iOS 13.0, *)
+@available(iOS 16.0, *)
 public class ChartLineViewModel: ObservableObject {
+     
     @Published var selectedIndex: Int = 0
     @Published var data: [(String, Double, Bool)] = []
     
-    private var isAnimated: Bool = true
     
     public init(data: [(String, Double, Bool)], selectedIndex: Int = 0) {
         self.data = data
@@ -21,13 +21,18 @@ public class ChartLineViewModel: ObservableObject {
     }
     
     
-    public func changeData(_ data: [(String, Double, Bool)], animated: Bool = true) {
-        isAnimated = animated
+    public func changeData(_ data: [(String, Double, Bool)]) {
         withAnimation {
             self.data = data
         }
     }
     
     
-    
+    public func selectIndex(_ index: Int) {
+        guard index >= 0 && index < data.count else { return }
+        
+        withAnimation {
+            self.selectedIndex = index
+        }
+    }
 }
