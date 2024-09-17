@@ -15,7 +15,7 @@ public class ChartLineViewModel: ObservableObject {
     
     private var isAnimated: Bool = true
     
-    public init(data: [(String, Double, Bool)]) {
+    public init(data: [(String, Double, Bool)], selectedIndex: Int = 0) {
         self.data = data
     }
     

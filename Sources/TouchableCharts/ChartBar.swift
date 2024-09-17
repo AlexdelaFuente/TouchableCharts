@@ -56,6 +56,8 @@ public struct ChartBar: View {
         self.animateBars = animateBars
         self.animateScroll = animateScroll
         self.scrollToEnd = scrollToEnd
+        
+        onBarTap(viewModel.selectedIndex)
     }
     
     
@@ -131,7 +133,6 @@ public struct ChartBar: View {
                                         withAnimation(.easeInOut(duration: 0.15)) {
                                             onBarTap(index)
                                             viewModel.selectedIndex = index
-                                            print("adios")
                                         }
                                     }
                                 }

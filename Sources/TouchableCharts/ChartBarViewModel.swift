@@ -22,7 +22,7 @@ public class ChartBarViewModel: ObservableObject {
     private var isAnimated = true
     
     
-    public init(data: [(String, Double)]) {
+    public init(data: [(String, Double)], selectedIndex: Int = 0) {
         self.data = data
         self.animatedIndexes.removeAll() // First launch
     }
