@@ -24,6 +24,7 @@ public class ChartBarViewModel: ObservableObject {
     
     public init(data: [(String, Double)], selectedIndex: Int = 0) {
         self.data = data
+        self.selectedIndex = selectedIndex
         self.animatedIndexes.removeAll() // First launch
     }
     

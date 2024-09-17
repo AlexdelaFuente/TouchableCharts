@@ -17,6 +17,7 @@ public class ChartLineViewModel: ObservableObject {
     
     public init(data: [(String, Double, Bool)], selectedIndex: Int = 0) {
         self.data = data
+        self.selectedIndex = selectedIndex
     }
     
     
