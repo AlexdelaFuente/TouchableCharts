@@ -11,8 +11,8 @@ import SwiftUI
 @available(iOS 16.0, *)
 public class ChartLineViewModel: ObservableObject {
      
-    @Published var selectedIndex: Int = 0
-    @Published var data: [(String, Double, Bool)] = []
+    @Published public var selectedIndex: Int = 0
+    @Published public var data: [(String, Double, Bool)] = []
     
     
     public init(data: [(String, Double, Bool)], selectedIndex: Int = 0) {
