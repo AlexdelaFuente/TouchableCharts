@@ -18,8 +18,8 @@ import SwiftUI
 ///   - barWidth: The width of each bar. Default is 30.
 ///   - barColor: The color of the bars. Default is gray.
 ///   - selectedBarColor: The color of the selected bar. Default is accent color.
-///   - textColor: The color of the text labels. Default is black.
-///   - selectedTextColor: The color of the selected text label. Default is accent color.
+///   - textColor: The color of the text labels. Default is primary.
+///   - selectedTextColor: The color of the selected text label. Default is primary.
 ///   - animateBars: If the bars are animated when view is created
 ///   - animateScroll: If the bars are animated when view is created
 ///   - scrollToEnd: If the view scroll to the end when the view is created
@@ -44,7 +44,7 @@ public struct ChartBar: View {
     
     
     // Initializer
-    public init(viewModel: ChartBarViewModel, onBarTap: @escaping (Int) -> Void ,barSpacing: CGFloat = 20, barWidth: CGFloat = 30, barColor: Color = .gray, selectedBarColor: Color = .accentColor, textColor: Color = .black, selectedTextColor: Color = .accentColor, animateBars: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
+    public init(viewModel: ChartBarViewModel, onBarTap: @escaping (Int) -> Void ,barSpacing: CGFloat = 20, barWidth: CGFloat = 30, barColor: Color = .gray, selectedBarColor: Color = .accentColor, textColor: Color = .primary, selectedTextColor: Color = .primary, animateBars: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
         self.viewModel = viewModel
         self.onBarTap = onBarTap
         self.barSpacing = barSpacing
@@ -85,7 +85,7 @@ public struct ChartBar: View {
                                         ZStack(alignment: .center) {
                                             Capsule()
                                                 .fill(viewModel.selectedIndex == index ? selectedBarColor.opacity(0.2) : barColor.opacity(0.2))
-                                                .frame(width: barWidth, height: viewModel.animatedIndexes.contains(index) ? availableHeight : 0)
+                                                .frame(width: barWidth + 3, height: viewModel.animatedIndexes.contains(index) ? availableHeight : 0)
                                                 .overlay {
                                                     Capsule()
                                                         .stroke(viewModel.selectedIndex == index ? selectedBarColor : barColor, lineWidth: 0.4)
@@ -153,10 +153,7 @@ public struct ChartBar: View {
                                 scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: .trailing)
                             }
                         }
-                        
-                        
                         animateBarsSequentially()
-                        
                     }
                     .padding()
                 }
@@ -177,8 +174,6 @@ public struct ChartBar: View {
             } else {
                 viewModel.animatedIndexes.insert(index)
             }
-            
-            
         }
     }
     
@@ -196,6 +191,4 @@ public struct ChartBar: View {
         
         return resultado
     }
-    
-    
 }

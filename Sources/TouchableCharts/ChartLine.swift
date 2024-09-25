@@ -34,7 +34,7 @@ public struct ChartLine: View {
     
     
     //Initializer
-    public init(viewModel: ChartLineViewModel, onPointTap: @escaping (Int) -> Void ,lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .blue, textColor: Color = .black, selectedTextColor: Color = .blue, animateLine: Bool = true, animatePoints: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
+    public init(viewModel: ChartLineViewModel, onPointTap: @escaping (Int) -> Void ,lineWidth: CGFloat = 3, pointDiameter: CGFloat = 12, selectedPointDiameter: CGFloat = 18, gridColor: Color = .gray, lineColor: Color = .accentColor, pointColor: Color = .gray, selectedPointColor: Color = .accentColor, textColor: Color = .primary, selectedTextColor: Color = .primary, animateLine: Bool = true, animatePoints: Bool = true, animateScroll: Bool = true, scrollToEnd: Bool = true) {
         self.viewModel = viewModel
         self.onPointTap = onPointTap
         self.lineWidth = lineWidth
