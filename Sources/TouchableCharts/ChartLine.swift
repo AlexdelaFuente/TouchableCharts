@@ -258,11 +258,11 @@ public struct ChartLine: View {
                                 if animateScroll {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(viewModel.data.count) * 0.08) {
                                         withAnimation {
-                                            scrollProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 0.97, y: 0))
+                                            scrollProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 1.02, y: 0))
                                         }
                                     }
                                 } else {
-                                    scrollProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 0.97, y: 0))
+                                    scrollProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 1.02, y: 0))
                                 }
                             }
                             animatedPoints = true
