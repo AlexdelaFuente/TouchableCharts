@@ -146,11 +146,11 @@ public struct ChartBar: View {
                             if animateScroll {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                                     withAnimation {
-                                        scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 1.02, y: 0))
+                                        scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 1.04, y: 0))
                                     }
                                 }
                             } else {
-                                scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 1.02, y: 0))
+                                scrollViewProxy.scrollTo(viewModel.data.count - 1, anchor: UnitPoint(x: 1.04, y: 0))
                             }
                         }
                         animateBarsSequentially()
